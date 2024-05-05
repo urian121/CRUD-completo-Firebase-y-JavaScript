@@ -1,23 +1,23 @@
-# CRUD completo Firebase y JavaScript usando Modales
+# CRUD (Create, Read, Update y Delete) completo Firebase y JavaScript
 
-##### CRUD con PHP, MySQL y Bootstrap 5 mediante ventanas modales, sistema completo de gestión de datos, abarcando operaciones de (Create, Read, Update y Delete). Utiliza PHP, MySQL y Bootstrap 5 para la interfaz, ofreciendo una experiencia interactiva a través de modales.
+##### Un proyecto que implementa operaciones CRUD (Crear, Leer, Actualizar y Eliminar) utilizando Firebase como base de datos y JavaScript para la lógica del cliente. Ofrece funcionalidades completas de gestión de datos en tiempo real en una aplicación web.
 
 ##### Pasos
 
-    Entrar en la plataforma https://firebase.google.com/ y hacer login con su cuenta de Google
-    Crear un nuevo Proyecto, le asignamos un nombre, para este caso se llamara 'crud-firebase-javascript'
-    No lo veo necesario, por lo que prcedemos a desabilitar Google Analytics, para nuestro proyecto.
-    Luego de haber creado el proyecto, saldra la opcion: Comienza por agregar Firebase a tu app, entre la opciones tenemos:
-    IOS, ANDROID, WEB, UNITY Y FLUTTER, vamos a elejir la opcion WEB, ya que lo que deseamos es crear una aplicacion web.
-
-    Ahora toca registrar una Aplicacion para este caso le asignamos el nombre 'App-crud-firebase-javascript', luego de esto Firebase generara un script el cual nos permitirar conectarnos a Firebase
-    Luego de haber configurado mi index.html con la configuracion para Firebase, vamos a ir 'Firestore Database'  para crear nuestra base de datos.
-    Seleccionar 'Comenzar en modo de prueba'
+    1. Accede a la plataforma Firebase y autentícate con tu cuenta de Google.
+    2. Crea un nuevo proyecto, asignándole el nombre 'crud-firebase-javascript'.
+    3. Si lo prefieres, desactiva Google Analytics para el proyecto.
+    4. Al crear el proyecto, selecciona la opción "Comienza por agregar Firebase a tu app" y elige "WEB".
+    5. Registra una nueva aplicación con el nombre 'App-crud-firebase-javascript'.
+    6. Firebase generará un script para conectarte; incorpóralo en tu proyecto.
+    7. Configura tu archivo index.html con la configuración para Firebase.
+    8. Dirígete a Firestore Database para crear la base de datos.
+    9. Selecciona "Comenzar en modo de prueba" para iniciar el proceso.
 
 ##### Notas:
 
-    Cada colección, representa una tabla
-    Documento, es equivalente a un nuevo registro en nuestra colección (tabla)
+    Una colección es equivalente a una tabla en una base de datos relacional.
+    Un Documento es equivalente a un registro en una tabla en una base de datos.
 
 ##### Revisar esta documentacion, para la implementación de Cloud Firestore
 

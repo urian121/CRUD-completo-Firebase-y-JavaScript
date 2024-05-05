@@ -1,3 +1,0 @@
-crear una base de datos en firebase
-#Una coleccion es equivalente a una tabla.
-#Documento es equivalente a un registro en una tabla.

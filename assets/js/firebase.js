@@ -1,7 +1,4 @@
 // Configuración de Firebase
-// https://firestore.googleapis.com/v1/projects/YOUR_PROJECT_ID/databases/(default)/documents
-// https://firestore.googleapis.com/v1/projects/YOUR_PROJECT_ID/databases/(default)/documents/colecciones/NOMBRE_DE_LA_COLECCION
-// https://firestore.googleapis.com/v1/projects/crud-firebase-javascript-6c4a6/databases/(default)/documents/empleados
 // Importante las versiones para 'firebase-app.js' y para 'firebase-firestore.js' en ambos casos debes ser las mismas
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
 import {
@@ -31,25 +28,28 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 /**
+ * ***************************************************************************
  * Acciones para el TODO (Create, Read, Update y Delete)
+ * Una colección es equivalente a una tabla en una base de datos relacional.
+ * Un Documento es equivalente a un registro en una tabla en una base de datos.
+ * ***************************************************************************
  */
 const coleccion = "tbl_empleados";
 
-// Función que recibe un objeto y lo agrega a la coleccion correspondiente
+// Función que recibe un objeto y lo agrega a la colección correspondiente
 export const addEmpleado = (nombre, cedula, edad, sexo, telefono, cargo) =>
   addDoc(collection(db, coleccion), { nombre, cedula, edad, sexo, telefono, cargo });
 
+// Obtener todos los documentos
 export const getEmpleadosCollection = () => getDocs(collection(db, coleccion));
 
-// Obtener un solo documento
+// Obtener un solo documento de acuerdo a su ID
 export const getEmpleadoCollection = (id) => {
   const docRef = doc(db, coleccion, id);
   return getDoc(docRef);
 };
 
-/**
- * Actulizar un documento
- */
+// Actulizar un documento
 export const updateEmpleadoCollection = (id, newFields) =>
   updateDoc(doc(db, coleccion, id), newFields);
 

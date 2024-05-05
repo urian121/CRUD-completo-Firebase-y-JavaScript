@@ -80,7 +80,7 @@ async function mostrarEmpleadosEnConsola() {
         </td>
       `;
       tablaEmpleados.appendChild(fila);
-      console.log("Empleado:", doc.data());
+      //console.log("Empleado:", doc.data());
     });
   } catch (error) {
     console.error("Error al obtener los empleados:", error);
@@ -101,7 +101,6 @@ window.addNuevoEmpleado = async function (event) {
   // Convertir FormData a un objeto JSON
   const formDataJSON = {};
   formData.forEach((value, key) => {
-    console.log(key, value);
     formDataJSON[key] = value;
   });
 
@@ -113,7 +112,7 @@ window.addNuevoEmpleado = async function (event) {
     setTimeout(() => {
       $("#agregarEmpleadoModal").css("opacity", "");
       $("#agregarEmpleadoModal").modal("hide");
-    }, 500);
+    }, 300);
 
     window.mostrarAlerta({ tipoToast: "success", mensaje: "¡Empleado registrado correctamente!" });
   } catch (error) {
@@ -279,8 +278,6 @@ window.actualizarEmpleado = async function (event) {
   });
 
   const { idEmpleado, nombre, cedula, edad, sexo, telefono, cargo } = formDataJSON;
-  console.log(idEmpleado, nombre, cedula, edad, sexo, telefono, cargo);
-
   try {
     await updateEmpleadoCollection(idEmpleado, { nombre, cedula, edad, sexo, telefono, cargo });
     formulario.reset();
@@ -313,7 +310,6 @@ window.eliminarEmpleado = async function (id) {
 /**
  * Función para mostrar alertas
  */
-
 iziToast.settings({
   timeout: 10000,
   resetOnHover: true,
@@ -328,7 +324,7 @@ iziToast.settings({
     console.log("Alerta cerrada!");
   },
 });
-function mostrarAlerta({ tipoToast, mensaje }) {
+window.mostrarAlerta = function ({ tipoToast, mensaje }) {
   if (tipoToast == "success") {
     iziToast.success({
       timeout: 5000,
@@ -344,4 +340,4 @@ function mostrarAlerta({ tipoToast, mensaje }) {
       message: mensaje,
     });
   }
-}
+};
