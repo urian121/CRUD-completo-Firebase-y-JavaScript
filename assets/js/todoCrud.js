@@ -204,7 +204,7 @@ async function cargarDetalleEmpleado(id) {
 window.editarEmpleado = async function (id) {
   try {
     // Ocultar la modal si está abierta
-    const existingModal = document.getElementById("detalleEmpleadoModal");
+    const existingModal = document.querySelector("#editarEmpleadoModal");
     if (existingModal) {
       const modal = bootstrap.Modal.getInstance(existingModal);
       if (modal) {
@@ -245,15 +245,14 @@ async function getEmpleadoUpdateCollection(id) {
     if (empleadoDoc.exists()) {
       const empleadoData = empleadoDoc.data();
       const { nombre, edad, cedula, sexo, telefono, cargo } = empleadoData;
-
-      const formulario = document.querySelector("#formularioEmpleadoEdit");
-      formulario.querySelector("#idEmpleado").value = id;
-      formulario.querySelector("#nombre").value = nombre;
-      formulario.querySelector("#cedula").value = cedula;
-      formulario.querySelector("#edad").value = edad;
-      formulario.querySelector(`#sexo_${sexo.toLowerCase()[0]}`).checked = true;
-      formulario.querySelector("#telefono").value = telefono;
-      formulario.querySelector("#cargo").value = cargo;
+      console.log(document.querySelectorAll("#nombre"));
+      document.querySelector("#idEmpleado").value = id;
+      document.querySelector("#nombre").value = nombre;
+      document.querySelector("#cedula").value = cedula;
+      document.querySelector("#edad").value = edad;
+      document.querySelector(`#sexo_${sexo.toLowerCase()[0]}`).checked = true;
+      document.querySelector("#telefono").value = telefono;
+      document.querySelector("#cargo").value = cargo;
     } else {
       console.log("No se encontró ningún empleado con el ID:", id);
     }
