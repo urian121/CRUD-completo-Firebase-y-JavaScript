@@ -285,7 +285,7 @@ window.actualizarEmpleado = async function (event) {
       $("#editarEmpleadoModal").modal("hide");
     }, 300);
 
-    window.mostrarAlerta({ tipoToast: "success", mensaje: "¡Empleado registrado correctamente!" });
+    window.mostrarAlerta({ tipoToast: "success", mensaje: "¡Empleado actualizado correctamente!" });
   } catch (error) {
     console.log(error);
   }
