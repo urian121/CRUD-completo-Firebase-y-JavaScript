@@ -12,6 +12,7 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  updateDoc,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
 // Firebase configuration (replace with your actual project details)
@@ -39,20 +40,18 @@ export const addEmpleado = (nombre, cedula, edad, sexo, telefono, cargo) =>
   addDoc(collection(db, coleccion), { nombre, cedula, edad, sexo, telefono, cargo });
 
 export const getEmpleadosCollection = () => getDocs(collection(db, coleccion));
-/*
-const querySnapshot = await getDocs(collection(db, "tbl_empleados"));
-querySnapshot.forEach((doc) => {
-  console.log(doc.data());
-  console.log(`${doc.id} => ${doc.data()}`);
-});
-*/
 
 // Obtener un solo documento
 export const getEmpleadoCollection = (id) => {
   const docRef = doc(db, coleccion, id);
-  console.log(docRef);
   return getDoc(docRef);
 };
+
+/**
+ * Actulizar un documento
+ */
+export const updateEmpleadoCollection = (id, newFields) =>
+  updateDoc(doc(db, coleccion, id), newFields);
 
 // Eliminar un documento
 export const deleteEmpleadoCollection = (id) => deleteDoc(doc(db, coleccion, id));

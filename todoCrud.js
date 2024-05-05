@@ -3,7 +3,47 @@ import {
   getEmpleadosCollection,
   deleteEmpleadoCollection,
   getEmpleadoCollection,
+  updateEmpleadoCollection,
 } from "./firebase.js";
+
+/**
+ * Función para levantar modal para registrar un nuevo empleado
+ */
+window.modalRegistrarEmpleado = async function () {
+  try {
+    // Ocultar la modal si está abierta
+    const existingModal = document.getElementById("detalleEmpleadoModal");
+    if (existingModal) {
+      const modal = bootstrap.Modal.getInstance(existingModal);
+      if (modal) {
+        modal.hide();
+      }
+      existingModal.remove(); // Eliminar la modal existente
+    }
+
+    const response = await fetch("modales/modalAdd.php");
+
+    if (!response.ok) {
+      throw new Error("Error al cargar la modal");
+    }
+
+    // response.text() es un método en programación que se utiliza para obtener el contenido de texto de una respuesta HTTP
+    const data = await response.text();
+
+    // Crear un elemento div para almacenar el contenido de la modal
+    const modalContainer = document.createElement("div");
+    modalContainer.innerHTML = data;
+
+    // Agregar la modal al documento actual
+    document.body.appendChild(modalContainer);
+
+    // Mostrar la modal
+    const myModal = new bootstrap.Modal(modalContainer.querySelector("#agregarEmpleadoModal"));
+    myModal.show();
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 /**
  * Función para obtener todas las colecciones
@@ -28,10 +68,15 @@ async function mostrarEmpleadosEnConsola() {
         <td>${empleado.cargo}</td>
         <td>${empleado.telefono}</td>
         <td>
-        <button class="btn btn-danger" onclick="borrar('${doc.id}')">Borrar</button>
-        <button class="btn btn-warning" onclick="verDetallesEmpleado('${doc.id}')">Detalles</button>
-        <button class="btn btn-warning" onclick="detallesEmpleado('${doc.id}')">D</button>
-               
+          <a title="Ver detalles del empleado" href="#" onclick="verDetallesEmpleado('${doc.id}')" class="btn btn-success">
+              <i class="bi bi-binoculars"></i>
+          </a>
+          <a title="Editar datos del empleado" href="#" onclick="editarEmpleado('${doc.id}')" class="btn btn-warning">
+              <i class="bi bi-pencil-square"></i>
+          </a>
+          <a title="Eliminar datos del empleado" href="#" onclick="eliminarEmpleado('${doc.id}')" class="btn btn-danger">
+              <i class="bi bi-trash"></i>
+          </a>               
         </td>
       `;
       tablaEmpleados.appendChild(fila);
@@ -79,7 +124,7 @@ window.addNuevoEmpleado = async function (event) {
 /**
  * Función para mostrar la modal de detalles del empleado
  */
-window.detallesEmpleado = async function (idEmpleado) {
+window.verDetallesEmpleado = async function (idEmpleado) {
   try {
     // Ocultar la modal si está abierta
     const existingModal = document.getElementById("detalleEmpleadoModal");
@@ -88,13 +133,13 @@ window.detallesEmpleado = async function (idEmpleado) {
       if (modal) {
         modal.hide();
       }
-      existingModal.remove(); // Eliminar la modal existente
+      existingModal.remove();
     }
 
     // Buscar la Modal de Detalles
     const response = await fetch("modales/modalDetalles.php");
     if (!response.ok) {
-      throw new Error("Error al cargar la modal de detalles del empleado");
+      throw new Error("Error al cargar la modal");
     }
     // response.text() es un método en programación que se utiliza para obtener el contenido de texto de una respuesta HTTP
     const modalHTML = await response.text();
@@ -124,8 +169,6 @@ async function cargarDetalleEmpleado(id) {
     const empleadoDoc = await getEmpleadoCollection(id);
     if (empleadoDoc.exists()) {
       const empleadoData = empleadoDoc.data();
-      console.log("Detalles del empleado:", empleadoData);
-
       const { nombre, edad, cedula, sexo, telefono, cargo } = empleadoData;
 
       const ulDetalleEmpleado = document.querySelector("#detalleEmpleadoContenido ul");
@@ -157,9 +200,106 @@ async function cargarDetalleEmpleado(id) {
 }
 
 /**
+ * Función para levantar la modal que mostrar los datos del empleado para actualizar
+ */
+window.editarEmpleado = async function (id) {
+  try {
+    // Ocultar la modal si está abierta
+    const existingModal = document.getElementById("detalleEmpleadoModal");
+    if (existingModal) {
+      const modal = bootstrap.Modal.getInstance(existingModal);
+      if (modal) {
+        modal.hide();
+      }
+      existingModal.remove();
+    }
+
+    // Buscar la Modal de Detalles
+    const response = await fetch("modales/modalEditar.php");
+    if (!response.ok) {
+      throw new Error("Error al cargar la modal");
+    }
+
+    const modalHTML = await response.text();
+    // Crear un elemento div para almacenar el contenido de la modal
+    const modalContainer = document.createElement("div");
+    modalContainer.innerHTML = modalHTML;
+
+    // Agregar la modal al documento actual
+    document.body.appendChild(modalContainer);
+
+    // Mostrar la modal
+    const myModal = new bootstrap.Modal(modalContainer.querySelector("#editarEmpleadoModal"));
+    myModal.show();
+    await getEmpleadoUpdateCollection(id);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+/**
+ * Buscar empleado a editar
+ */
+async function getEmpleadoUpdateCollection(id) {
+  try {
+    const empleadoDoc = await getEmpleadoCollection(id);
+    if (empleadoDoc.exists()) {
+      const empleadoData = empleadoDoc.data();
+      const { nombre, edad, cedula, sexo, telefono, cargo } = empleadoData;
+
+      const formulario = document.querySelector("#formularioEmpleadoEdit");
+      formulario.querySelector("#idEmpleado").value = id;
+      formulario.querySelector("#nombre").value = nombre;
+      formulario.querySelector("#cedula").value = cedula;
+      formulario.querySelector("#edad").value = edad;
+      formulario.querySelector(`#sexo_${sexo.toLowerCase()[0]}`).checked = true;
+      formulario.querySelector("#telefono").value = telefono;
+      formulario.querySelector("#cargo").value = cargo;
+    } else {
+      console.log("No se encontró ningún empleado con el ID:", id);
+    }
+  } catch (error) {
+    console.error("Error al obtener los detalles del empleado:", error);
+  }
+}
+
+/**
+ * Función para actualizar el empleado
+ */
+window.actualizarEmpleado = async function (event) {
+  event.preventDefault();
+  const formulario = document.querySelector("#formularioEmpleadoEdit");
+  const formData = new FormData(formulario);
+
+  // Convertir FormData a un objeto JSON
+  const formDataJSON = {};
+  formData.forEach((value, key) => {
+    //console.log(key, value);
+    formDataJSON[key] = value;
+  });
+
+  const { idEmpleado, nombre, cedula, edad, sexo, telefono, cargo } = formDataJSON;
+  console.log(idEmpleado, nombre, cedula, edad, sexo, telefono, cargo);
+
+  try {
+    await updateEmpleadoCollection(idEmpleado, { nombre, cedula, edad, sexo, telefono, cargo });
+    formulario.reset();
+    setTimeout(() => {
+      $("#editarEmpleadoModal").css("opacity", "");
+      $("#editarEmpleadoModal").modal("hide");
+    }, 300);
+
+    window.mostrarAlerta({ tipoToast: "success", mensaje: "¡Empleado registrado correctamente!" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
  * Función para borrar un empleado, una colleccion
  */
-window.borrar = async function (id) {
+
+window.eliminarEmpleado = async function (id) {
   try {
     await deleteEmpleadoCollection(id);
     document.querySelector(`#${id}`).remove();
