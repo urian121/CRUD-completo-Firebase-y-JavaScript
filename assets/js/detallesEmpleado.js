@@ -29,9 +29,7 @@ async function verDetallesEmpleado(idEmpleado) {
     document.body.appendChild(modalContainer);
 
     // Mostrar la modal
-    const myModal = new bootstrap.Modal(
-      modalContainer.querySelector("#detalleEmpleadoModal")
-    );
+    const myModal = new bootstrap.Modal(modalContainer.querySelector("#detalleEmpleadoModal"));
     myModal.show();
 
     await cargarDetalleEmpleado(idEmpleado);
@@ -45,26 +43,19 @@ async function verDetallesEmpleado(idEmpleado) {
  */
 async function cargarDetalleEmpleado(idEmpleado) {
   try {
-    const response = await axios.get(
-      `acciones/detallesEmpleado.php?id=${idEmpleado}`
-    );
+    const response = await axios.get(`acciones/detallesEmpleado.php?id=${idEmpleado}`);
     if (response.status === 200) {
       console.log(response.data);
-      const { nombre, edad, cedula, sexo, telefono, cargo, avatar } =
-        response.data;
+      const { nombre, edad, cedula, sexo, telefono, cargo, avatar } = response.data;
       const avatarURL = avatar ? `acciones/fotos_empleados/${avatar}` : null;
-      const avatarExistente = avatarURL
-        ? await verificarExistenciaImagen(avatarURL)
-        : false;
+      const avatarExistente = avatarURL ? await verificarExistenciaImagen(avatarURL) : false;
       const avatarHTML = avatarExistente
         ? `<img src="${avatarURL}" alt="Avatar" style="width: 100px; height: 100px; display:block;">`
         : "No disponible";
 
       // Limpiar el contenido existente de la lista ul
 
-      const ulDetalleEmpleado = document.querySelector(
-        "#detalleEmpleadoContenido ul"
-      );
+      const ulDetalleEmpleado = document.querySelector("#detalleEmpleadoContenido ul");
 
       ulDetalleEmpleado.innerHTML = ` 
         <li class="list-group-item"><b>Nombre:</b> 
@@ -79,9 +70,7 @@ async function cargarDetalleEmpleado(idEmpleado) {
         <li class="list-group-item"><b>Sexo:</b>
          ${sexo ? sexo : "No disponible"}
         </li>
-        <li class="list-group-item"><b>Teléfono:</b> ${
-          telefono ? telefono : "No disponible"
-        }</li>
+        <li class="list-group-item"><b>Teléfono:</b> ${telefono ? telefono : "No disponible"}</li>
         <li class="list-group-item"><b>Cargo:</b> 
           ${cargo ? cargo : "No disponible"}
         </li>
