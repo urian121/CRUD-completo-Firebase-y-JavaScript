@@ -24,6 +24,9 @@ window.miModal = async function (idModal, idEmpleado = "") {
       case "editarEmpleadoModal":
         url = "modales/modalEditar.php";
         break;
+      case "eliminarEmpleadoModal":
+        url = "modales/modalDelete.php";
+        break;
       default:
         throw new Error(`El idModal '${idModal}' no es válido`);
     }
@@ -53,6 +56,11 @@ window.miModal = async function (idModal, idEmpleado = "") {
       await cargarDetalleEmpleado(idEmpleado);
     } else if (idModal === "editarEmpleadoModal") {
       await getEmpleadoUpdateCollection(idEmpleado);
+    } else if (idModal === "eliminarEmpleadoModal") {
+      let DeleteBtn = document.querySelector("#confirmDeleteBtn");
+      DeleteBtn.addEventListener("click", async () => {
+        await eliminarEmpleado(idEmpleado);
+      });
     }
   } catch (error) {
     console.error(error);
@@ -100,7 +108,7 @@ async function mostrarEmpleadosEnHTML() {
           <a title="Editar datos del empleado" href="#" onclick="window.miModal('editarEmpleadoModal','${doc.id}')" class="btn btn-warning">
               <i class="bi bi-pencil-square"></i>
           </a>
-          <a title="Eliminar datos del empleado" href="#" onclick="eliminarEmpleado('${doc.id}')" class="btn btn-danger">
+          <a title="Eliminar datos del empleado" href="#" onclick="window.miModal('eliminarEmpleadoModal','${doc.id}')" class="btn btn-danger">
               <i class="bi bi-trash"></i>
           </a>               
         </td>
@@ -193,7 +201,6 @@ async function getEmpleadoUpdateCollection(id) {
     if (empleadoDoc.exists()) {
       const empleadoData = empleadoDoc.data();
       const { nombre, edad, cedula, sexo, telefono, cargo } = empleadoData;
-      console.log(document.querySelectorAll("#nombre"));
       document.querySelector("#idEmpleado").value = id;
       document.querySelector("#nombre").value = nombre;
       document.querySelector("#cedula").value = cedula;
@@ -242,8 +249,7 @@ window.actualizarEmpleado = async function (event) {
 /**
  * Función para borrar un empleado, una colleccion
  */
-
-window.eliminarEmpleado = async function (id) {
+async function eliminarEmpleado(id) {
   try {
     await deleteEmpleadoCollection(id);
     document.querySelector(`#${id}`).remove();
@@ -252,7 +258,7 @@ window.eliminarEmpleado = async function (id) {
     console.error("Error al borrar el empleado:", error);
     mostrarAlerta({ tipoToast: "error", mensaje: "Error al eliminar el empleado" });
   }
-};
+}
 
 /**
  * Función para mostrar alertas
