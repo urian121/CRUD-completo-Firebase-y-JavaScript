@@ -7,21 +7,28 @@ import {
 } from "./firebase.js";
 
 /**
- * Función para levantar modal para registrar un nuevo empleado
+ * Función para levantar Venta Modal
  */
-window.modalRegistrarEmpleado = async function () {
+window.miModal = async function (idModal, idEmpleado = "") {
   try {
-    // Ocultar la modal si está abierta
-    const existingModal = document.getElementById("detalleEmpleadoModal");
-    if (existingModal) {
-      const modal = bootstrap.Modal.getInstance(existingModal);
-      if (modal) {
-        modal.hide();
-      }
-      existingModal.remove(); // Eliminar la modal existente
+    await validarModal(idModal);
+
+    let url = "";
+    switch (idModal) {
+      case "agregarEmpleadoModal":
+        url = "modales/modalAdd.php";
+        break;
+      case "detalleEmpleadoModal":
+        url = "modales/modalDetalles.php";
+        break;
+      case "editarEmpleadoModal":
+        url = "modales/modalEditar.php";
+        break;
+      default:
+        throw new Error(`El idModal '${idModal}' no es válido`);
     }
 
-    const response = await fetch("modales/modalAdd.php");
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error("Error al cargar la modal");
@@ -38,17 +45,36 @@ window.modalRegistrarEmpleado = async function () {
     document.body.appendChild(modalContainer);
 
     // Mostrar la modal
-    const myModal = new bootstrap.Modal(modalContainer.querySelector("#agregarEmpleadoModal"));
+    const modalElement = modalContainer.querySelector(`#${idModal}`);
+    const myModal = new bootstrap.Modal(modalElement);
     myModal.show();
+
+    if (idModal === "detalleEmpleadoModal") {
+      await cargarDetalleEmpleado(idEmpleado);
+    } else if (idModal === "editarEmpleadoModal") {
+      await getEmpleadoUpdateCollection(idEmpleado);
+    }
   } catch (error) {
     console.error(error);
   }
 };
 
+//Función para validar si existe una modal abierta
+async function validarModal(idModal) {
+  const existingModal = document.getElementById(idModal);
+  if (existingModal) {
+    const modal = bootstrap.Modal.getInstance(existingModal);
+    if (modal) {
+      modal.hide();
+    }
+    existingModal.remove();
+  }
+}
+
 /**
  * Función para obtener todas las colecciones
  */
-async function mostrarEmpleadosEnConsola() {
+async function mostrarEmpleadosEnHTML() {
   try {
     const empleadosCollection = getEmpleadosCollection();
     const queryCollection = await empleadosCollection;
@@ -68,10 +94,10 @@ async function mostrarEmpleadosEnConsola() {
         <td>${empleado.cargo}</td>
         <td>${empleado.telefono}</td>
         <td>
-          <a title="Ver detalles del empleado" href="#" onclick="verDetallesEmpleado('${doc.id}')" class="btn btn-success">
+          <a title="Ver detalles del empleado" href="#" onclick="window.miModal('detalleEmpleadoModal','${doc.id}')" class="btn btn-success">
               <i class="bi bi-binoculars"></i>
           </a>
-          <a title="Editar datos del empleado" href="#" onclick="editarEmpleado('${doc.id}')" class="btn btn-warning">
+          <a title="Editar datos del empleado" href="#" onclick="window.miModal('editarEmpleadoModal','${doc.id}')" class="btn btn-warning">
               <i class="bi bi-pencil-square"></i>
           </a>
           <a title="Eliminar datos del empleado" href="#" onclick="eliminarEmpleado('${doc.id}')" class="btn btn-danger">
@@ -87,7 +113,7 @@ async function mostrarEmpleadosEnConsola() {
   }
 }
 
-window.addEventListener("DOMContentLoaded", mostrarEmpleadosEnConsola);
+window.addEventListener("DOMContentLoaded", mostrarEmpleadosEnHTML);
 
 /**
  * Función para agregar un nuevo empleado
@@ -117,46 +143,6 @@ window.addNuevoEmpleado = async function (event) {
     window.mostrarAlerta({ tipoToast: "success", mensaje: "¡Empleado registrado correctamente!" });
   } catch (error) {
     console.log(error);
-  }
-};
-
-/**
- * Función para mostrar la modal de detalles del empleado
- */
-window.verDetallesEmpleado = async function (idEmpleado) {
-  try {
-    // Ocultar la modal si está abierta
-    const existingModal = document.getElementById("detalleEmpleadoModal");
-    if (existingModal) {
-      const modal = bootstrap.Modal.getInstance(existingModal);
-      if (modal) {
-        modal.hide();
-      }
-      existingModal.remove();
-    }
-
-    // Buscar la Modal de Detalles
-    const response = await fetch("modales/modalDetalles.php");
-    if (!response.ok) {
-      throw new Error("Error al cargar la modal");
-    }
-    // response.text() es un método en programación que se utiliza para obtener el contenido de texto de una respuesta HTTP
-    const modalHTML = await response.text();
-
-    // Crear un elemento div para almacenar el contenido de la modal
-    const modalContainer = document.createElement("div");
-    modalContainer.innerHTML = modalHTML;
-
-    // Agregar la modal al documento actual
-    document.body.appendChild(modalContainer);
-
-    // Mostrar la modal
-    const myModal = new bootstrap.Modal(modalContainer.querySelector("#detalleEmpleadoModal"));
-    myModal.show();
-
-    await cargarDetalleEmpleado(idEmpleado);
-  } catch (error) {
-    console.error(error);
   }
 };
 
@@ -197,44 +183,6 @@ async function cargarDetalleEmpleado(id) {
     console.error("Error al mostrar detalles del empleado", error);
   }
 }
-
-/**
- * Función para levantar la modal que mostrar los datos del empleado para actualizar
- */
-window.editarEmpleado = async function (id) {
-  try {
-    // Ocultar la modal si está abierta
-    const existingModal = document.querySelector("#editarEmpleadoModal");
-    if (existingModal) {
-      const modal = bootstrap.Modal.getInstance(existingModal);
-      if (modal) {
-        modal.hide();
-      }
-      existingModal.remove();
-    }
-
-    // Buscar la Modal de Detalles
-    const response = await fetch("modales/modalEditar.php");
-    if (!response.ok) {
-      throw new Error("Error al cargar la modal");
-    }
-
-    const modalHTML = await response.text();
-    // Crear un elemento div para almacenar el contenido de la modal
-    const modalContainer = document.createElement("div");
-    modalContainer.innerHTML = modalHTML;
-
-    // Agregar la modal al documento actual
-    document.body.appendChild(modalContainer);
-
-    // Mostrar la modal
-    const myModal = new bootstrap.Modal(modalContainer.querySelector("#editarEmpleadoModal"));
-    myModal.show();
-    await getEmpleadoUpdateCollection(id);
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 /**
  * Buscar empleado a editar
