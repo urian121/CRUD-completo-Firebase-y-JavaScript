@@ -22,6 +22,7 @@
 ##### Revisar esta documentacion, para la implementación de Cloud Firestore
 
     https://firebase.google.com/docs/firestore/quickstart?hl=es-419
+    https://firebase.google.com/docs/firestore/manage-data/add-data?hl=es-419
     https://firebase.google.com/docs/web/learn-more?hl=es-419#available-libraries
 
 ![](https://raw.githubusercontent.com/urian121/imagenes-proyectos-github/master/crud-firebase-javascript-add.png)
