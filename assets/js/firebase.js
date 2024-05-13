@@ -24,7 +24,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-// Initialize Cloud Firestore and get a reference to the service
+// Inicializa Cloud Firestore y obtén una referencia al servicio.
 export const db = getFirestore(app);
 
 /**
@@ -36,22 +36,22 @@ export const db = getFirestore(app);
  */
 const coleccion = "tbl_empleados";
 
-// Función que recibe un objeto y lo agrega a la colección correspondiente
+// Esta función agrega un nuevo empleado a una colección en Firestore, con los detalles proporcionados como nombre, cédula, edad, sexo, teléfono y cargo.
 export const addEmpleado = (nombre, cedula, edad, sexo, telefono, cargo) =>
   addDoc(collection(db, coleccion), { nombre, cedula, edad, sexo, telefono, cargo });
 
-// Obtener todos los documentos
+// Esta función obtiene todos los documentos de una colección de empleados en Firestore y devuelve una promesa que se resuelve con los datos de esos documentos.
 export const getEmpleadosCollection = () => getDocs(collection(db, coleccion));
 
-// Obtener un solo documento de acuerdo a su ID
+// Esta función obtiene un documento específico de una colección de empleados en Firestore utilizando su ID como referencia y devuelve una promesa que se resuelve con los datos del documento.
 export const getEmpleadoCollection = (id) => {
   const docRef = doc(db, coleccion, id);
   return getDoc(docRef);
 };
 
-// Actulizar un documento
+// Esta función actualiza un documento específico en una colección de empleados en Firestore con los nuevos campos proporcionados, utilizando el ID del documento como referencia.
 export const updateEmpleadoCollection = (id, newFields) =>
   updateDoc(doc(db, coleccion, id), newFields);
 
-// Eliminar un documento
+// Esta función elimina un documento específico de una colección de empleados en Firestore utilizando su ID como referencia.
 export const deleteEmpleadoCollection = (id) => deleteDoc(doc(db, coleccion, id));

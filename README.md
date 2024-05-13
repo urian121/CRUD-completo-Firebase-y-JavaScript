@@ -19,6 +19,17 @@
     Una colección es equivalente a una tabla en una base de datos relacional.
     Un Documento es equivalente a un registro en una tabla en una base de datos.
 
+##### Métodos de Firebase Firestore
+
+    getFirestore: Obtiene una instancia de Firestore para acceder a la base de datos.
+    collection: Accede a una colección específica en Firestore para realizar operaciones.
+    addDoc: Añade un nuevo documento a una colección en Firestore.
+    getDoc: Obtiene un documento específico de una colección en Firestore.
+    getDocs: Obtiene varios documentos de una colección en Firestore.
+    deleteDoc: Elimina un documento específico de una colección en Firestore.
+    doc: Accede a un documento específico dentro de una colección en Firestore.
+    updateDoc: Actualiza un documento específico dentro de una colección en Firestore.
+
 ##### Revisar esta documentacion, para la implementación de Cloud Firestore
 
     https://firebase.google.com/docs/firestore/quickstart?hl=es-419
